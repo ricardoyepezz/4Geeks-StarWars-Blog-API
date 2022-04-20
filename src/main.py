@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User
+from models import db, User, People
 #from models import Person
 
 app = Flask(__name__)
@@ -38,6 +38,22 @@ def handle_hello():
     }
 
     return jsonify(response_body), 200
+
+@app.route('/people', methods=['GET'])
+def getPeople():
+    #funcion query all de alquemy
+    all_people = People.query.all()#retorna arreglo de clases
+    #traigo todos los personajes y le aplico un serialize
+    arr_people = list(map(lambda x:x.serialize(), all_people))
+    return jsonify({"mensaje": arr_people})
+
+@app.route('/people/<int:people_id>', methods=['GET'])
+def getPeopleID(people_id):
+    one_people = People.query.get(people_id)
+    if one_people:
+        return jsonify({"personaje": one_people.serialize()})
+    else:
+        return "error!"
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':

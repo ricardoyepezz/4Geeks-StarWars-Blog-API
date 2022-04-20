@@ -17,3 +17,20 @@ class User(db.Model):
             "email": self.email,
             # do not serialize the password, its a security breach
         }
+#creo tabla people
+class People(db.Model):
+    uid = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), unique=True, nullable=False)
+    gender = db.Column(db.String(20), unique=False, nullable=True)
+    heigth = db.Column(db.Integer, unique=False, nullable=True)
+    mass = db.Column(db.Float, unique=False, nullable=True)
+
+    def serialize(self):
+        return {
+            "uid": self.uid,
+            "name": self.name,
+            "gender": self.gender,
+            "heigth": self.heigth,
+            "mass": self.mass,
+            # do not serialize the password, its a security breach
+        }
