@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User, People
+from models import db, User, People, Planets
 #from models import Person
 
 app = Flask(__name__)
@@ -45,13 +45,27 @@ def getPeople():
     all_people = People.query.all()#retorna arreglo de clases
     #traigo todos los personajes y le aplico un serialize
     arr_people = list(map(lambda x:x.serialize(), all_people))
-    return jsonify({"mensaje": arr_people})
+    return jsonify({"Personajes": arr_people})
 
 @app.route('/people/<int:people_id>', methods=['GET'])
 def getPeopleID(people_id):
     one_people = People.query.get(people_id)
     if one_people:
         return jsonify({"personaje": one_people.serialize()})
+    else:
+        return "error!"
+
+@app.route('/planets', methods=['GET'])
+def getPlanets():
+    all_planets = Planets.query.all()
+    arr_planets = list(map(lambda x:x.serialize(), all_planets))
+    return jsonify({"Planetas": arr_planets})
+
+@app.route('/planets/<int:planets_id>', methods=['GET'])
+def getPlanetsID(planets_id):
+    one_planet = Planets.query.get(planets_id)
+    if one_planet:
+        return jsonify({"planeta": one_planet.serialize()})
     else:
         return "error!"
 

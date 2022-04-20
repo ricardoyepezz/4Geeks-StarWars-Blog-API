@@ -34,3 +34,20 @@ class People(db.Model):
             "mass": self.mass,
             # do not serialize the password, its a security breach
         }
+
+class Planets(db.Model):
+    uid = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), unique=True, nullable=False)
+    rotation = db.Column(db.Integer, unique=False, nullable=True)
+    orbital = db.Column(db.Integer, unique=False, nullable=True)
+    diameter = db.Column(db.Integer, unique=False, nullable=True)
+
+    def serialize(self):
+        return {
+            "uid": self.uid,
+            "name": self.name,
+            "rotation": self.rotation,
+            "orbital": self.orbital,
+            "diameter": self.diameter,
+            # do not serialize the password, its a security breach
+        }
