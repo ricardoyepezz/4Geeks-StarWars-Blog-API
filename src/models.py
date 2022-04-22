@@ -8,9 +8,6 @@ class User(db.Model):
     password = db.Column(db.String(80), unique=False, nullable=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
 
-    def __repr__(self):
-        return '<User %r>' % self.username
-
     def serialize(self):
         return {
             "id": self.id,
@@ -51,3 +48,20 @@ class Planets(db.Model):
             "diameter": self.diameter,
             # do not serialize the password, its a security breach
         }
+
+class Fav_people(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    uid_people = db.Column(db.Integer, db.ForeignKey('people.uid'))
+    id_user = db.Column(db.Integer, db.ForeignKey('user.id'))
+    people = db.relationship('People')
+    user = db.relationship('User')
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "uid_people": self.uid_people,
+            "id_user": self.id_user,
+            # do not serialize the password, its a security breach
+        }
+
+
