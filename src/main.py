@@ -30,12 +30,7 @@ def handle_invalid_usage(error):
 def sitemap():
     return generate_sitemap(app)
 
-@app.route('/users', methods=['GET'])
-def getUser():
-    all_User = User.query.all()
-    arr_user = list(map(lambda x:x.serialize(), all_User))
-    return jsonify({"Users": arr_user})
-
+#PEOPLE GET
 @app.route('/people', methods=['GET'])
 def getPeople():
     #funcion query all de alquemy
@@ -44,6 +39,7 @@ def getPeople():
     arr_people = list(map(lambda x:x.serialize(), all_people))
     return jsonify({"People": arr_people})
 
+#PEOPLE_ID GET
 @app.route('/people/<int:people_id>', methods=['GET'])
 def getPeopleID(people_id):
     one_people = People.query.get(people_id)
@@ -52,12 +48,14 @@ def getPeopleID(people_id):
     else:
         return "error!"
 
+#PLANETS GET
 @app.route('/planets', methods=['GET'])
 def getPlanets():
     all_planets = Planets.query.all()
     arr_planets = list(map(lambda x:x.serialize(), all_planets))
     return jsonify({"Planetas": arr_planets})
 
+#PLANETS_ID GET
 @app.route('/planets/<int:planets_id>', methods=['GET'])
 def getPlanetsID(planets_id):
     one_planet = Planets.query.get(planets_id)
@@ -66,12 +64,21 @@ def getPlanetsID(planets_id):
     else:
         return "error!"
 
+#USERS GET
+@app.route('/users', methods=['GET'])
+def getUser():
+    all_User = User.query.all()
+    arr_user = list(map(lambda x:x.serialize(), all_User))
+    return jsonify({"Users": arr_user})
+
+#USER_FAV GET
 @app.route('/favPeople', methods=['GET'])
 def getPeopleFav():
     all_favPeople = Fav_people.query.all()
     arr_fav = list(map(lambda x:x.serialize(), all_favPeople))
     return jsonify({"People Favs": arr_fav})
 
+#FAV_PEOPLE POST
 @app.route('/favorite/people/<int:people_id>', methods=['POST'])
 def addFavPeople(people_id):
     user = request.get_json()
@@ -81,24 +88,25 @@ def addFavPeople(people_id):
     #instanciar nuevo fav
         newFav = Fav_people()
         newFav.id_user = user['id']
-        newFav.uid_people = people_id
+        newFav.id_people = people_id
 
         db.session.add(newFav)
         db.session.commit()
         return("ok")
     else:
-        return ("user not exist")
+        return ("user doesn't exist")
 
+
+#FAV_PEOPLE DELETE
 @app.route('/favorite/people/<int:people_id>', methods=['DELETE'])
 def deleteFavPeople(people_id):
     user = request.get_json() #{id:1}
-    allFavs = Fav_people.query.filter_by(id_user=user['id'],uid_people=people_id).all()
-
+    allFavs = Fav_people.query.filter_by(id_user=user['id'],id_people=people_id).all()
     for i in allFavs:
         db.session.delete(i)
     db.session.commit()
 
-    return('todo salio ok')
+    return('deleted character')
     
 
 # this only runs if `$ python src/main.py` is executed
