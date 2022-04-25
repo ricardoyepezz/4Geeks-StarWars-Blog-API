@@ -71,14 +71,14 @@ def getUser():
     arr_user = list(map(lambda x:x.serialize(), all_User))
     return jsonify({"Users": arr_user})
 
-#USER_FAV GET
+#USER_FAV_PEOPLE GET
 @app.route('/favPeople', methods=['GET'])
 def getPeopleFav():
     all_favPeople = Fav_people.query.all()
     arr_fav = list(map(lambda x:x.serialize(), all_favPeople))
     return jsonify({"People Favs": arr_fav})
 
-#USER_FAV GET
+#USER_FAV_PLANETS GET
 @app.route('/favPlanets', methods=['GET'])
 def getPlanetsFav():
     all_favPlanets = Fav_planets.query.all()
