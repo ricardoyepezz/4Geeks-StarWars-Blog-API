@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User, People, Planets, Fav_people
+from models import db, User, People, Planets, Fav_people, Fav_planets
 #from models import Person
 
 app = Flask(__name__)
@@ -78,6 +78,13 @@ def getPeopleFav():
     arr_fav = list(map(lambda x:x.serialize(), all_favPeople))
     return jsonify({"People Favs": arr_fav})
 
+#USER_FAV GET
+@app.route('/favPlanets', methods=['GET'])
+def getPlanetsFav():
+    all_favPlanets = Fav_planets.query.all()
+    arr_fav = list(map(lambda x:x.serialize(), all_favPlanets))
+    return jsonify({"Planets Favs": arr_fav})
+
 #FAV_PEOPLE POST
 @app.route('/favorite/people/<int:people_id>', methods=['POST'])
 def addFavPeople(people_id):
@@ -96,6 +103,23 @@ def addFavPeople(people_id):
     else:
         return ("user doesn't exist")
 
+#FAV_PLANETS POST
+@app.route('/favorite/planets/<int:planets_id>', methods=['POST'])
+def addFavPlanets(planets_id):
+    user = request.get_json()
+    #validar si existe usuario
+    checkUser = User.query.get(user['id'])
+    if checkUser:
+    #instanciar nuevo fav
+        newFav = Fav_planets()
+        newFav.id_user = user['id']
+        newFav.id_planets = planets_id
+
+        db.session.add(newFav)
+        db.session.commit()
+        return("ok")
+    else:
+        return ("user doesn't exist")
 
 #FAV_PEOPLE DELETE
 @app.route('/favorite/people/<int:people_id>', methods=['DELETE'])
@@ -107,6 +131,17 @@ def deleteFavPeople(people_id):
     db.session.commit()
 
     return('deleted character')
+
+#FAV_PLANETS DELETE
+@app.route('/favorite/planets/<int:planets_id>', methods=['DELETE'])
+def deleteFavPlanets(planets_id):
+    user = request.get_json() #{id:1}
+    allFavs = Fav_planets.query.filter_by(id_user=user['id'],id_planets=planets_id).all()
+    for i in allFavs:
+        db.session.delete(i)
+    db.session.commit()
+
+    return('deleted planet')
     
 
 # this only runs if `$ python src/main.py` is executed
